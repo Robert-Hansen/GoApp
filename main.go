@@ -1,23 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"github.com/robert-hansen/goapp/routes"
-	"log"
-	"github.com/robert-hansen/goapp/middleware"
 	"github.com/robert-hansen/goapp/app"
+	"github.com/robert-hansen/goapp/config"
+	"log"
 )
 
 
 func main() {
-	fmt.Println("hejsdfsdsa123")
-
+	cfg, err := config.New("config/app.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	app := app.New(cfg)
 	router := routes.NewRouter()
-	log.Println(router.HandleOPTIONS)
-
-	hej := middleware.Hej{"hej"}
-	log.Println(hej)
-
-	app := app.App{"App"}
-	log.Println(app.Name)
+	app.Run(router)
 }
