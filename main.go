@@ -1,17 +1,17 @@
 package main
 
 import (
-	"net/http"
-	"log"
-	"github.com/robert-hansen/goapp/app"
+	"fmt"
 	"github.com/robert-hansen/goapp/routes"
+	"log"
+	"github.com/robert-hansen/goapp/middleware"
 )
 
 
 func main() {
-	app := app.New()
+	fmt.Println("hejsdfsdsa123")
 	router := routes.NewRouter()
-	app.Run(router)
-
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Println(router.HandleOPTIONS)
+	hej := middleware.Hej{"hej"}
+	log.Println(hej)
 }
