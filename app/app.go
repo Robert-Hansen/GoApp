@@ -4,12 +4,11 @@ import (
 	"log"
 	"net/http"
 	"fmt"
-	"github.com/robert-hansen/goapp/config"
 	"github.com/julienschmidt/httprouter"
 )
 
 type App struct {
-	Config 		config.Config
+
 }
 
 func New() *App {
@@ -17,12 +16,8 @@ func New() *App {
 }
 
 func (a *App) Run(r *httprouter.Router)  {
-	port := a.Config.Port
+	port := 8080
 	addr := fmt.Sprintf(":%v", port)
 	fmt.Printf("APP is listening on port: %d\n", port)
 	log.Fatal(http.ListenAndServe(addr, r))
-}
-
-func (a *App) IsProd() bool {
-	return a.Config.Env == "prod"
 }
