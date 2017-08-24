@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"fmt"
-	"github.com/robert-hansen/GoApp/config"
+	"github.com/robert-hansen/goapp/config"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -12,8 +12,8 @@ type App struct {
 	Config 		config.Config
 }
 
-func New(cfg config.Config) *App {
-
+func New() *App {
+	return &App{}
 }
 
 func (a *App) Run(r *httprouter.Router)  {
