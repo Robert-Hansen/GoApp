@@ -5,6 +5,7 @@ import (
 	"github.com/robert-hansen/goapp/routes"
 	"log"
 	"github.com/robert-hansen/goapp/middleware"
+	"github.com/robert-hansen/goapp/app"
 )
 
 
@@ -14,4 +15,6 @@ func main() {
 	log.Println(router.HandleOPTIONS)
 	hej := middleware.Hej{"hej"}
 	log.Println(hej)
+	test := app.App{"App"}
+	log.Println(test)
 }

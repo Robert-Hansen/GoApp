@@ -1,5 +1,5 @@
-package test
+package app
 
-type Test struct {
+type App struct {
 	Name string
 }
