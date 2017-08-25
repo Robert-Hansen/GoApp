@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/robert-hansen/goapp/routes"
-	"github.com/robert-hansen/goapp/app"
-	"github.com/robert-hansen/goapp/config"
 	"log"
+	"github.com/robert-hansen/goapp/app"
+	"github.com/robert-hansen/goapp/routes"
+	"github.com/robert-hansen/goapp/config"
 )
 
 

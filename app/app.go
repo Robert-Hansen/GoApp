@@ -4,36 +4,30 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"github.com/jinzhu/gorm"
-	"github.com/robert-hansen/goapp/config"
 	"github.com/julienschmidt/httprouter"
+	"github.com/robert-hansen/goapp/config"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/robert-hansen/goapp/database"
+	"github.com/robert-hansen/goapp/database/migrations"
 )
 
-type App struct {
+type Application struct {
 	Config 		config.Config
-	Database	*gorm.DB
+	Database	*database.MySQLDB
 }
 
-func New(cfg config.Config) *App {
-	dbConnection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
-		cfg.MySQL.Username,
-		cfg.MySQL.Password,
-		cfg.MySQL.Host,
-		cfg.MySQL.Port,
-		cfg.MySQL.DatabaseName,
-		cfg.MySQL.Encoding)
-	db, err := gorm.Open("mysql", dbConnection)
+func New(cfg config.Config) *Application {
+	db, err := database.NewMYSQLDB(cfg.MySQL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
-	return &App{cfg, db}
+	migrations.RunUserMigration(db.DB)
+	return &Application{cfg, db}
 }
 
-func (a *App) Run(r *httprouter.Router) {
-	port := a.Config.Port
+func (App *Application) Run(Router *httprouter.Router) {
+	port := App.Config.Port
 	addr := fmt.Sprintf(":%v", port)
 	fmt.Printf("GOAPP is listening on port: %d\n", port)
-	log.Fatal(http.ListenAndServe(addr, r))
+	log.Fatal(http.ListenAndServe(addr, Router))
 }

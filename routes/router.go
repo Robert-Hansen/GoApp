@@ -1,23 +1,25 @@
 package routes
 
 import (
-	"github.com/julienschmidt/httprouter"
-	"net/http"
 	"fmt"
+	"net/http"
 	"github.com/satori/go.uuid"
+	"github.com/julienschmidt/httprouter"
+	"github.com/robert-hansen/goapp/controller"
 )
 
 func NewRouter() *httprouter.Router {
-	r := httprouter.New()
+	router := httprouter.New()
+	router.ServeFiles("/static/*filepath", http.Dir("public"))
 
-	r.GET("/", Index)
-	r.GET("/hello/:name", Hello)
+	router.GET("/", Index)
+	router.GET("/hello/:name", Hello)
 
-	return r
+	return router
 }
 
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome !\n")
+	controller.Home(w, r)
 }
 
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

@@ -16,9 +16,9 @@ type MySQLConfig struct {
 }
 
 type Config struct {
-	Env string 				`json:"env"`
-	MySQL MySQLConfig 		`json:"mysql"`
-	Port int 				`json:"port"`
+	Env		string		`json:"env"`
+	MySQL	MySQLConfig	`json:"mysql"`
+	Port 	int			`json:"port"`
 }
 
 func New(path string) (Config, error) {
