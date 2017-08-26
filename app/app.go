@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"github.com/julienschmidt/httprouter"
+	"github.com/go-chi/chi"
 	"github.com/robert-hansen/goapp/config"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/robert-hansen/goapp/database"
@@ -25,7 +25,7 @@ func New(cfg config.Config) *Application {
 	return &Application{cfg, db}
 }
 
-func (App *Application) Run(Router *httprouter.Router) {
+func (App *Application) Run(Router *chi.Mux) {
 	port := App.Config.Port
 	addr := fmt.Sprintf(":%v", port)
 	fmt.Printf("GOAPP is listening on port: %d\n", port)

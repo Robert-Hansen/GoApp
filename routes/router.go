@@ -1,29 +1,52 @@
 package routes
 
 import (
+	"os"
 	"fmt"
+	"strings"
 	"net/http"
-	"github.com/satori/go.uuid"
-	"github.com/julienschmidt/httprouter"
+	"path/filepath"
+	"github.com/go-chi/chi"
 	"github.com/robert-hansen/goapp/controller"
 )
 
-func NewRouter() *httprouter.Router {
-	router := httprouter.New()
-	router.ServeFiles("/static/*filepath", http.Dir("public"))
+func NewRouter() *chi.Mux {
+	router := chi.NewRouter()
 
-	router.GET("/", Index)
-	router.GET("/hello/:name", Hello)
+	workDir, _ := os.Getwd()
+	filesDir := filepath.Join(workDir, "public")
+	FileServer(router, "/static", http.Dir(filesDir))
+
+	router.Get("/", Index)
+	router.Get("/hello/:name", Hello)
 
 	return router
 }
 
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	controller.Home(w, r)
+func Index(res http.ResponseWriter, req *http.Request) {
+	controller.Home(res, req)
 }
 
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	u1 := uuid.NewV4()
-	fmt.Printf("UUIDv4: %s\n", u1)
-	fmt.Fprintf(w, "hej"+u1.String()+", %s!\n", ps.ByName("name"))
+func Hello(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(res, "Hello ", req.Context().Value("name"))
+}
+
+// FileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+func FileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit URL parameters.")
+	}
+
+	fs := http.StripPrefix(path, http.FileServer(root))
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}))
 }
